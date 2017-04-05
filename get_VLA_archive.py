@@ -9,10 +9,12 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('-u','--user',dest='myuser',help='Archive username')
 parser.add_option('-p','--password',dest='mypass',help='Archive password')
+parser.add_option('-r','--resume',dest='resume',action='store_true',help='Resume broken downloads (default = False, which skips existing files')
 (options,args) = parser.parse_args()
 
 myuser = options.myuser
 mypass = options.mypass
+resume = options.resume
 
 archiveurl = 'https://archive.nrao.edu/secured/'
 request = urllib2.Request(archiveurl+myuser)
@@ -28,8 +30,15 @@ for item in pagesrc:
 		fcomps = target.split('.')
 		if (fcomps[-1] == 'tar') and (fcomps[-2] == 'ms'):
 			if not os.path.isfile(target):
+				# No local file present, proceed to download
 				syscall = 'wget --user='+myuser+' --password='+mypass+' '+archiveurl+myuser+'/'+target
 				print syscall
 				os.system(syscall)
-			else:
+			elif os.path.isfile(target) and resume:
+				# Local file is present and we're resuming it
+				syscall = 'wget --user='+myuser+' --password='+mypass+' --continue '+archiveurl+myuser+'/'+target
+				print syscall
+				os.system(syscall)
+			elif os.path.isfile(target) and not resume:
+				# Local file is present but we're not resuming
 				print target,'already exists locally, skipping'

@@ -9,7 +9,7 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('-u','--user',dest='myuser',help='Archive username')
 parser.add_option('-p','--password',dest='mypass',help='Archive password')
-parser.add_option('-r','--resume',dest='resume',action='store_true',help='Resume broken downloads (default = False, which skips existing files')
+parser.add_option('-r','--resume',dest='resume',action='store_true',help='Resume broken downloads (default = False, which skips existing files)')
 (options,args) = parser.parse_args()
 
 myuser = options.myuser
